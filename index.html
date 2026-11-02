@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>James — links & tips</title>
+<meta name="description" content="James — tools, builds, and the tip jar." />
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#131316; --line:#22222a;
+    --text:#e8e8ee; --dim:#8b8b99; --accent:#6ee7b7;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, #15151b 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100dvh; padding:32px 16px;
+  }
+  main{width:100%; max-width:480px;}
+  .card{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:28px 22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+  }
+  .avatar{
+    width:72px; height:72px; border-radius:50%;
+    background:linear-gradient(135deg,#6ee7b7,#3b82f6);
+    display:grid; place-items:center;
+    font-weight:800; font-size:26px; color:#0b0b0d;
+    margin:0 auto 14px;
+  }
+  h1{font-size:20px; text-align:center; letter-spacing:-.01em;}
+  .tag{color:var(--dim); font-size:14px; text-align:center; margin-top:6px; line-height:1.45;}
+  .links{display:grid; gap:10px; margin-top:24px;}
+  a.link{
+    display:flex; align-items:center; justify-content:space-between;
+    background:#17171d; border:1px solid var(--line);
+    color:var(--text); text-decoration:none;
+    padding:14px 16px; border-radius:12px;
+    font-size:15px; font-weight:500;
+    transition:transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  a.link:hover{transform:translateY(-1px); border-color:#3a3a46; background:#1b1b22;}
+  a.link:active{transform:translateY(0);}
+  a.link span.arrow{color:var(--dim); font-size:13px;}
+  .tip{
+    margin-top:22px; padding-top:20px; border-top:1px solid var(--line);
+  }
+  .tip h2{font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--dim); text-align:center; margin-bottom:12px;}
+  .amounts{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .amounts button{
+    background:#17171d; border:1px solid var(--line); color:var(--text);
+    padding:12px 0; border-radius:10px; font-size:15px; font-weight:600;
+    cursor:pointer; transition:border-color .12s, background .12s;
+  }
+  .amounts button:hover{border-color:#3a3a46; background:#1b1b22;}
+  .amounts button.active{border-color:var(--accent); color:var(--accent);}
+  .tip form{margin-top:12px; display:grid; gap:10px;}
+  .tip input{
+    width:100%; padding:12px 14px; border-radius:10px;
+    background:#17171d; border:1px solid var(--line); color:var(--text);
+    font-size:15px; outline:none;
+  }
+  .tip input:focus{border-color:var(--accent);}
+  .tip button.go{
+    width:100%; padding:13px; border-radius:10px; border:none;
+    background:var(--accent); color:#06251c; font-weight:700; font-size:15px;
+    cursor:pointer;
+  }
+  .tip button.go:hover{filter:brightness(1.05);}
+  footer{margin-top:18px; text-align:center; color:var(--dim); font-size:12px;}
+</style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <div class="avatar">J</div>
+    <h1>James</h1>
+    <p class="tag">Tools, builds, and the tip jar.<br/>Everything I ship lives here.</p>
+
+    <nav class="links">
+      <a class="link" href="https://gumroad.com/YOURNAME" target="_blank" rel="noopener">
+        The Operator Pack — 30 prompts <span class="arrow">→</span>
+      </a>
+      <a class="link" href="https://github.com/YOURNAME" target="_blank" rel="noopener">
+        Code & tools <span class="arrow">→</span>
+      </a>
+      <a class="link" href="https://x.com/YOURNAME" target="_blank" rel="noopener">
+        X / updates <span class="arrow">→</span>
+      </a>
+      <a class="link" href="https://discord.gg/YOURINVITE" target="_blank" rel="noopener">
+        Discord <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <div class="tip">
+      <h2>Tip jar</h2>
+      <div class="amounts">
+        <button type="button" data-amt="3">$3</button>
+        <button type="button" data-amt="5" class="active">$5</button>
+        <button type="button" data-amt="10">$10</button>
+      </div>
+      <form id="tipform">
+        <input id="email" type="email" placeholder="email (for the receipt)" required />
+        <button class="go" type="submit">Send tip</button>
+      </form>
+    </div>
+
+    <footer>© <span id="yr"></span> James</footer>
+  </section>
+</main>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  let amount = 5;
+  document.querySelectorAll('.amounts button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.amounts button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      amount = Number(b.dataset.amt);
+    });
+  });
+
+  // Stripe Payment Link: create one in the Stripe dashboard (phone browser works),
+  // paste the URL here. Each tier can have its own link; this uses one for simplicity.
+  const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/YOUR_LINK";
+
+  document.getElementById('tipform').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const url = new URL(STRIPE_PAYMENT_LINK);
+    url.searchParams.set('prefilled_email', email);
+    url.searchParams.set('client_reference_id', 'tip_' + amount);
+    // Stripe Payment Links support fixed prices; for variable amounts,
+    // create one link per tier and route by `amount` here.
+    window.location.href = url.toString();
+  });
+</script>
+</body>
+</html>
